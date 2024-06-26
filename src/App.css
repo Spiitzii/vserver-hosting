@@ -537,3 +537,109 @@ body {
   grid-column: span 2;
   justify-self: center;
 }
+
+/* PayPal */
+
+/* Payment Form CSS */
+.payment-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-row {
+  display: contents;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: red;
+  margin-top: 5px;
+}
+
+.invoice-summary p {
+  text-align: right;
+}
+
+.submit-button {
+  grid-column: span 2;
+  justify-self: center;
+}
+
+.payment-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-row {
+  display: contents;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: red;
+  margin-top: 5px;
+}
+
+.invoice-summary p {
+  text-align: right;
+}
+
+.submit-button {
+  grid-column: span 2;
+  justify-self: center;
+}
+
+.discount-code-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.discount-code-label {
+  margin-right: 10px;
+}
+
+.discount-code-input {
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.apply-discount-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.apply-discount-button:hover {
+  background-color: #218838;
+}
+
+.apply-discount-button:active {
+  background-color: #1e7e34;
+}
+
+.paypal-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Abstand nach oben */
+}
+
+.paypal-buttons {
+  transform: scale(1); /* Verkleinert die Größe um 50% */
+  transform-origin: center center; /* Zentriert die Transformation */
+}

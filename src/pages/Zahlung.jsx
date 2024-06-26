@@ -128,7 +128,7 @@ function Zahlung({ orders, submitOrder }) {
               className="discount-code-input"
             />
             <button type="button" onClick={applyDiscountCode} className="apply-discount-button">Anwenden</button>
-            {discountError && <p className="error-message">{discountError}</p>}
+            {discountError && <p className="discount-error">{discountError}</p>}
           </div>
           <div className="invoice-summary">
             <p>Zwischensumme: {originalTotalCost.toFixed(2)}€</p>
@@ -209,7 +209,26 @@ function Zahlung({ orders, submitOrder }) {
         <Login isOpen={isLoginOpen} onRequestClose={() => setIsLoginOpen(false)} onRegisterOpen={() => setIsRegisterOpen(true)} />
         <Register isOpen={isRegisterOpen} onRequestClose={() => {setIsRegisterOpen(false); setIsLoginOpen(true);}} onConfirmOpen={() => setIsConfirmOpen(true)} />
         <Confirm isOpen={isConfirmOpen} onRequestClose={() => setIsConfirmOpen(false)} />
-
+        <div className="paypal-button-container">
+          <PayPalScriptProvider options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID }}>
+            <PayPalButtons
+              createOrder={(data, actions) => {
+                return actions.order.create({
+                  purchase_units: [{
+                    amount: {
+                      value: totalCost.toFixed(2) // Replace with your order amount
+                    }
+                  }]
+                });
+              }}
+              onApprove={(data, actions) => {
+                return actions.order.capture().then((details) => {
+                  alert("Transaction completed by " + details.payer.name.given_name);
+                });
+              }}
+            />
+          </PayPalScriptProvider>
+        </div>
       </main>
     </div>
   );
