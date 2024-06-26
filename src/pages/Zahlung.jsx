@@ -1,10 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import '../App.css';
-import Login from '../components/Login'; 
-import { AccountContext } from '../components/Accounts';
-import Register from '../components/Register'
-import Confirm from '../components/Confirm';
-
 
 const instanceDetails = {
   't2.micro': { vCPUs: 1, RAM: 1, price: 20 },
@@ -32,11 +27,6 @@ function Zahlung({ orders, submitOrder }) {
   });
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountError, setDiscountError] = useState('');
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-  const { isLoggedIn } = useContext(AccountContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,11 +48,7 @@ function Zahlung({ orders, submitOrder }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!isLoggedIn) {
-      setIsLoginOpen(true);
-    } else {
-      submitOrder(customerData);
-    }
+    submitOrder(customerData);
   };
 
   const originalTotalCost = orders.reduce((acc, order) => {
@@ -206,29 +192,6 @@ function Zahlung({ orders, submitOrder }) {
           </div>
           <button type="submit" className="submit-button">Bestellung abschicken</button>
         </form>
-        <Login isOpen={isLoginOpen} onRequestClose={() => setIsLoginOpen(false)} onRegisterOpen={() => setIsRegisterOpen(true)} />
-        <Register isOpen={isRegisterOpen} onRequestClose={() => {setIsRegisterOpen(false); setIsLoginOpen(true);}} onConfirmOpen={() => setIsConfirmOpen(true)} />
-        <Confirm isOpen={isConfirmOpen} onRequestClose={() => setIsConfirmOpen(false)} />
-        <div className="paypal-button-container">
-          <PayPalScriptProvider options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID }}>
-            <PayPalButtons
-              createOrder={(data, actions) => {
-                return actions.order.create({
-                  purchase_units: [{
-                    amount: {
-                      value: totalCost.toFixed(2) // Replace with your order amount
-                    }
-                  }]
-                });
-              }}
-              onApprove={(data, actions) => {
-                return actions.order.capture().then((details) => {
-                  alert("Transaction completed by " + details.payer.name.given_name);
-                });
-              }}
-            />
-          </PayPalScriptProvider>
-        </div>
       </main>
     </div>
   );
