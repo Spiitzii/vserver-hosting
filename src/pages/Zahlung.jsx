@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import '../App.css';
+import Login from '../components/Login'; 
+import { AccountContext } from '../components/Accounts';
+import Register from '../components/Register'
+import Confirm from '../components/Confirm';
+
 
 const instanceDetails = {
   't2.micro': { vCPUs: 1, RAM: 1, price: 20 },
@@ -27,6 +32,11 @@ function Zahlung({ orders, submitOrder }) {
   });
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountError, setDiscountError] = useState('');
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const { isLoggedIn } = useContext(AccountContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +58,11 @@ function Zahlung({ orders, submitOrder }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    submitOrder(customerData);
+    if (!isLoggedIn) {
+      setIsLoginOpen(true);
+    } else {
+      submitOrder(customerData);
+    }
   };
 
   const originalTotalCost = orders.reduce((acc, order) => {
@@ -114,7 +128,7 @@ function Zahlung({ orders, submitOrder }) {
               className="discount-code-input"
             />
             <button type="button" onClick={applyDiscountCode} className="apply-discount-button">Anwenden</button>
-            {discountError && <p className="discount-error">{discountError}</p>}
+            {discountError && <p className="error-message">{discountError}</p>}
           </div>
           <div className="invoice-summary">
             <p>Zwischensumme: {originalTotalCost.toFixed(2)}€</p>
@@ -192,6 +206,16 @@ function Zahlung({ orders, submitOrder }) {
           </div>
           <button type="submit" className="submit-button">Bestellung abschicken</button>
         </form>
+        <Login isOpen={isLoginOpen} onRequestClose={() => setIsLoginOpen(false)} onRegisterOpen={() => setIsRegisterOpen(true)} />
+        <Register isOpen={isRegisterOpen} 
+          onRequestClose={() => {setIsRegisterOpen(false); setIsLoginOpen(true);}} 
+          onConfirmOpen={() => {
+          setIsConfirmOpen(true);
+          setIsLoginOpen(false);
+          }} 
+        />
+        <Confirm isOpen={isConfirmOpen} onRequestClose={() => setIsConfirmOpen(false)} />
+
       </main>
     </div>
   );
