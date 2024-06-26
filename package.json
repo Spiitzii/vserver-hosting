@@ -5,11 +5,13 @@
   "dependencies": {
     "@aws-amplify/cli": "^12.12.2",
     "@aws-amplify/ui-react": "^5.3.3",
+    "@paypal/react-paypal-js": "^8.5.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "aws-amplify": "^5.3.19",
     "cross-env": "^7.0.3",
+    "dom": "^0.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "react": "^18.3.1",

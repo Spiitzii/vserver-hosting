@@ -69,7 +69,7 @@ function Home() {
             <p2>Speicher:</p2> <span>30GB (SSD)</span>
             <p />
             <p1>
-              <span>ab 8,50€ pro Monat</span>
+              <span>ab 20,00€ pro Monat</span>
             </p1>
           </div>
           <div className="server-container">
@@ -83,7 +83,7 @@ function Home() {
             <p2>Speicher:</p2> <span>50GB (SSD)</span>
             <p />
             <p1>
-              <span>ab 15,90€ pro Monat</span>
+              <span>ab 30,00€ pro Monat</span>
             </p1>
           </div>
           <div className="server-container">
@@ -97,7 +97,7 @@ function Home() {
             <p2>Speicher:</p2> <span>100GB (SSD)</span>
             <p />
             <p1>
-              <span>ab 24,99€ pro Monat</span>
+              <span>ab 40,00€ pro Monat</span>
             </p1>
           </div>
           <div className="server-container">
@@ -111,7 +111,7 @@ function Home() {
             <p2>Speicher:</p2> <span>200GB (SSD)</span>
             <p />
             <p1>
-              <span>ab 49,99€ pro Monat</span>
+              <span>ab 59,00€ pro Monat</span>
             </p1>
           </div>
         </div>
