@@ -4,7 +4,7 @@ import Login from '../components/Login';
 import { AccountContext } from '../components/Accounts';
 import Register from '../components/Register'
 import Confirm from '../components/Confirm';
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+
 
 const instanceDetails = {
   't2.micro': { vCPUs: 1, RAM: 1, price: 20 },
@@ -56,15 +56,6 @@ function Zahlung({ orders, submitOrder }) {
     }
   };
 
-  const removeDiscountCode = () => {
-    setCustomerData(prevData => ({
-      ...prevData,
-      discountCode: ''
-    }));
-    setDiscountApplied(false);
-    setDiscountError('');
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!isLoggedIn) {
@@ -80,11 +71,11 @@ function Zahlung({ orders, submitOrder }) {
     return acc + instanceCost + storageCost;
   }, 0);
 
-  const discountAmount = discountApplied ? originalTotalCost - 0.01 : 0; // Set to 0.01 for discount
+  const discountAmount = discountApplied ? originalTotalCost : 0; // 100% Rabatt
   const discountedTotalCost = originalTotalCost - discountAmount;
   const taxRate = 0.19; // 19% MwSt
   const taxAmount = discountedTotalCost * taxRate;
-  const totalCost = (discountApplied ? 0.01 : discountedTotalCost).toFixed(2);
+  const totalCost = discountedTotalCost + taxAmount;
 
   return (
     <div className="container payment-container">
@@ -127,36 +118,27 @@ function Zahlung({ orders, submitOrder }) {
             </tbody>
           </table>
           <div className="discount-code-container">
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
-              <label htmlFor="discountCode" className="discount-code-label" style={{ alignSelf: 'flex-start' }}>Gutscheincode:</label>
-              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                <input
-                  type="text"
-                  id="discountCode"
-                  name="discountCode"
-                  value={customerData.discountCode}
-                  onChange={handleChange}
-                  className="discount-code-input"
-                  style={{ flex: '1' }}
-                />
-                <button type="button" onClick={applyDiscountCode} className="apply-discount-button">Anwenden</button>
-              </div>
-            </div>
+            <label htmlFor="discountCode" className="discount-code-label">Gutscheincode:</label>
+            <input
+              type="text"
+              id="discountCode"
+              name="discountCode"
+              value={customerData.discountCode}
+              onChange={handleChange}
+              className="discount-code-input"
+            />
+            <button type="button" onClick={applyDiscountCode} className="apply-discount-button">Anwenden</button>
             {discountError && <p className="error-message">{discountError}</p>}
-            {discountApplied && (
-              <button type="button" onClick={removeDiscountCode} className="remove-discount-button">Entfernen</button>
-            )}
           </div>
           <div className="invoice-summary">
             <p>Zwischensumme: {originalTotalCost.toFixed(2)}€</p>
             {discountApplied && <p>Rabatt: -{discountAmount.toFixed(2)}€</p>}
             <p>MwSt (19%): {taxAmount.toFixed(2)}€</p>
-            <p><strong>Gesamtbetrag: {totalCost}€</strong></p>
+            <p><strong>Gesamtbetrag: {totalCost.toFixed(2)}€</strong></p>
           </div>
         </div>
-        <div className="customer-data-container" style={{ backgroundColor: '#f0f0f0', padding: '10px', marginTop: '20px', transform: 'scale(0.7)', transformOrigin: 'top left' }}>
-          <h4 style={{ textAlign: 'left' }}>Rechnungsinformationen:</h4>
-          <form onSubmit={handleSubmit} className="payment-form">
+        <form onSubmit={handleSubmit} className="payment-form">
+          <div className="form-row">
             <div className="form-group">
               <label htmlFor="firstName">Vorname:</label>
               <input
@@ -181,6 +163,8 @@ function Zahlung({ orders, submitOrder }) {
                 className="small-input"
               />
             </div>
+          </div>
+          <div className="form-row">
             <div className="form-group">
               <label htmlFor="street">Straße:</label>
               <input
@@ -205,6 +189,8 @@ function Zahlung({ orders, submitOrder }) {
                 className="small-input"
               />
             </div>
+          </div>
+          <div className="form-row">
             <div className="form-group">
               <label htmlFor="email">E-Mail:</label>
               <input
@@ -217,33 +203,13 @@ function Zahlung({ orders, submitOrder }) {
                 className="small-input"
               />
             </div>
-            <button type="submit" className="submit-button">Bestellung abschicken</button>
-          </form>
+          </div>
+          <button type="submit" className="submit-button">Bestellung abschicken</button>
+        </form>
         <Login isOpen={isLoginOpen} onRequestClose={() => setIsLoginOpen(false)} onRegisterOpen={() => setIsRegisterOpen(true)} />
         <Register isOpen={isRegisterOpen} onRequestClose={() => {setIsRegisterOpen(false); setIsLoginOpen(true);}} onConfirmOpen={() => setIsConfirmOpen(true)} />
         <Confirm isOpen={isConfirmOpen} onRequestClose={() => setIsConfirmOpen(false)} />
 
-        </div>
-        <div className="paypal-button-container">
-          <PayPalScriptProvider options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID, "currency": "EUR" }}>
-            <PayPalButtons
-              createOrder={(data, actions) => {
-                return actions.order.create({
-                  purchase_units: [{
-                    amount: {
-                      value: totalCost // Übergibt die rabattierte Summe an PayPal
-                    }
-                  }]
-                });
-              }}
-              onApprove={(data, actions) => {
-                return actions.order.capture().then((details) => {
-                  alert("Transaction completed by " + details.payer.name.given_name);
-                });
-              }}
-            />
-          </PayPalScriptProvider>
-        </div>
       </main>
     </div>
   );
