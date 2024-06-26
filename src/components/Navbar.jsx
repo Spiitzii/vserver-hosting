@@ -10,7 +10,7 @@ function Navbar({ onLoginOpen, cartCount }) {
     <nav className="navbar navbar-expand-lg custom-navbar">
       <Link className="navbar-brand" to="/">
         <div className="logo-icon">
-          <img src={firmaLogo} width={80} height={50} alt="Firma Logo" />
+          <img src={firmaLogo} width={50%} height={50%} alt="Firma Logo" />
         </div>
       </Link>
       <button

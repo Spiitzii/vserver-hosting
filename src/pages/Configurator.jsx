@@ -3,7 +3,7 @@ import '../App.css';
 import linuxLogo from '../assets/logos/linux.png';
 import windowsLogo from '../assets/logos/windows.png';
 import awsLogo from '../assets/logos/aws.png';
-import { v4 as uuidv4 } from 'uuid';
+/* import { v4 as uuidv4 } from 'uuid'; */
 
 function Configurator({ addOrder }) {
   const instanceOptions = [
@@ -43,13 +43,13 @@ function Configurator({ addOrder }) {
       return;
     }
 
-    const orderId = uuidv4();
-    const fileName = `${orderId}.tf`;
+    /* const orderId = uuidv4(); */
+    /* const fileName = `${orderId}.tf`; */
 
     const baseCost = selectedInstance.cost;
     const totalCost = calculateTotalCost(baseCost, storage);
 
-    const orderData = { instanceType, os, osVersion, storage, fileName, cost: totalCost };
+    /* const orderData = { instanceType, os, osVersion, storage, fileName, cost: totalCost }; */
     console.log('Adding order:', { instanceType, os, osVersion, storage, cost: totalCost });
     addOrder({ instanceType, os, osVersion, storage, cost: totalCost });
     setError('');  // Clear error message on successful order

@@ -12,12 +12,12 @@ import { Account } from './components/Accounts';
 import Status from './components/Status';
 import Confirm from './components/Confirm';
 
-
 function App() {
   const [orders, setOrders] = useState([]);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
   const openLogin = () => {
     setShowLogin(true);
     setShowRegister(false);
@@ -42,8 +42,8 @@ function App() {
 
   const closeConfirm = () => {
     setShowConfirm(false);
-  }
-  
+  };
+
   const addOrder = (order) => {
     setOrders([...orders, order]);
   };
@@ -55,7 +55,7 @@ function App() {
   const submitOrder = (customerData) => {
     const orderData = { customerData, orders };
     console.log('Sending order data:', orderData);
-    fetch('http://localhost:5000/api/orders', {
+    fetch('https://nextgenhosting.de/api/orders', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

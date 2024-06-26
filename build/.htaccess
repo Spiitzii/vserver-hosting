@@ -1,0 +1,14 @@
+# Allow access to the .well-known directory for Let's Encrypt validation
+<Directory "/var/www/html/nextgenhosting.de">
+    Options None
+    AllowOverride None
+    Require all granted
+</Directory>
+
+# If you have other specific rules for your website, include them here
+# Example: Redirect all traffic to https
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Other custom rules
