@@ -14,12 +14,12 @@ function Home() {
   return (
     <div className="container">
       <header className="header">
-        <h3> Willkommen bei v-Hosting</h3>
+        <h3> Willkommen bei NextGenHosting</h3>
       </header>
       <div className="welcome-text">
         <p>
           <br />
-          Bei v-Hosting bieten wir Ihnen maßgeschneiderte virtuelle Serverlösungen, die perfekt auf Ihre individuellen Geschäftsanforderungen zugeschnitten sind. Unsere vServer zeichnen sich durch hohe Leistung, Flexibilität und Zuverlässigkeit aus und sind ideal für anspruchsvolle Business-Anwendungen, die dedizierte, garantierte Rechenressourcen erfordern.
+          Bei NextGenHosting bieten wir Ihnen maßgeschneiderte virtuelle Serverlösungen, die perfekt auf Ihre individuellen Geschäftsanforderungen zugeschnitten sind. Unsere vServer zeichnen sich durch hohe Leistung, Flexibilität und Zuverlässigkeit aus und sind ideal für anspruchsvolle Business-Anwendungen, die dedizierte, garantierte Rechenressourcen erfordern.
         </p>
       </div>
       <hr />

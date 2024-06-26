@@ -30,11 +30,11 @@
 }
 
 .custom-navbar {
-  background-color: #6095ff;
+  background-color: hsl(0, 0%, 100%);
 }
 
 .nav-link {
-  color: white;
+  color: rgb(0, 0, 0);
   font-weight: bold;
 }
 
@@ -43,6 +43,7 @@
   display: flex;
   align-items: center;
 }
+
 
 /* Globale Stile */
 body {
@@ -488,13 +489,13 @@ body {
 
 .cart-count {
   position: absolute;
-  top: -10px;
-  right: -10px;
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  padding: 5px 10px;
-  font-size: 12px;
+  top: -3px;
+  right: -3px;
+  background-color: #1FD7DB;
+  color: rgb(0, 0, 0);
+  border-radius: 100%;
+  padding: 4px 6px;
+  font-size:10px;
 }
 
 .discount-code-label {
