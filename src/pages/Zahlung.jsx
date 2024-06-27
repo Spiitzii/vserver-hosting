@@ -3,7 +3,7 @@ import '../App.css';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import Login from '../components/Login'; 
 import { AccountContext } from '../components/Accounts';
-import Register from '../components/Register'
+import Register from '../components/Register';
 import Confirm from '../components/Confirm';
 
 const instanceDetails = {
@@ -35,6 +35,7 @@ function Zahlung({ orders, submitOrder }) {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [paypalKey, setPaypalKey] = useState(0); // State for forcing PayPal button re-render
 
   const { isLoggedIn } = useContext(AccountContext);
 
@@ -52,10 +53,12 @@ function Zahlung({ orders, submitOrder }) {
     if (customerData.discountCode === 'ts24') {
       setDiscountApplied(true);
       setDiscountError('');
-      console.log("Discount applied. Total cost: ", totalCost);
+      setPaypalKey(prevKey => prevKey + 1); // Update PayPal key to force re-render
+      console.log("Discount applied. Total cost: ", getTotalCost());
     } else {
       setDiscountApplied(false);
       setDiscountError('Ungültiger Gutscheincode');
+      setPaypalKey(prevKey => prevKey + 1); // Update PayPal key to force re-render
     }
   };
 
@@ -66,7 +69,8 @@ function Zahlung({ orders, submitOrder }) {
     }));
     setDiscountApplied(false);
     setDiscountError('');
-    console.log("Discount removed. Total cost: ", totalCost);
+    setPaypalKey(prevKey => prevKey + 1); // Update PayPal key to force re-render
+    console.log("Discount removed. Total cost: ", getTotalCost());
   };
 
   const handleSubmit = (e) => {
@@ -89,6 +93,8 @@ function Zahlung({ orders, submitOrder }) {
   const taxRate = 0.19; // 19% MwSt
   const taxAmount = discountedTotalCost * taxRate;
   const totalCost = (discountApplied ? discountedTotalCost : originalTotalCost).toFixed(2);
+
+  const getTotalCost = () => (discountApplied ? discountedTotalCost : originalTotalCost).toFixed(2);
 
   return (
     <div className="container payment-container">
@@ -134,16 +140,16 @@ function Zahlung({ orders, submitOrder }) {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
               <label htmlFor="discountCode" className="discount-code-label" style={{ alignSelf: 'flex-start' }}>Gutscheincode:</label>
               <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            <input
-              type="text"
-              id="discountCode"
-              name="discountCode"
-              value={customerData.discountCode}
-              onChange={handleChange}
-              className="discount-code-input"
+                <input
+                  type="text"
+                  id="discountCode"
+                  name="discountCode"
+                  value={customerData.discountCode}
+                  onChange={handleChange}
+                  className="discount-code-input"
                   style={{ flex: '1' }}
-            />
-            <button type="button" onClick={applyDiscountCode} className="apply-discount-button">Anwenden</button>
+                />
+                <button type="button" onClick={applyDiscountCode} className="apply-discount-button">Anwenden</button>
               </div>
             </div>
             {discountError && <p className="error-message">{discountError}</p>}
@@ -160,85 +166,85 @@ function Zahlung({ orders, submitOrder }) {
         </div>
         <div className="customer-data-container" style={{ backgroundColor: '#f0f0f0', padding: '10px', marginTop: '20px', transform: 'scale(0.7)', transformOrigin: 'top left' }}>
           <h4 style={{ textAlign: 'left' }}>Rechnungsinformationen:</h4>
-        <form onSubmit={handleSubmit} className="payment-form">
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="firstName">Vorname:</label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={customerData.firstName}
-                onChange={handleChange}
-                required
-                className="small-input"
-              />
+          <form onSubmit={handleSubmit} className="payment-form">
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="firstName">Vorname:</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={customerData.firstName}
+                  onChange={handleChange}
+                  required
+                  className="small-input"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="lastName">Nachname:</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={customerData.lastName}
+                  onChange={handleChange}
+                  required
+                  className="small-input"
+                />
+              </div>
             </div>
-            <div className="form-group">
-              <label htmlFor="lastName">Nachname:</label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={customerData.lastName}
-                onChange={handleChange}
-                required
-                className="small-input"
-              />
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="street">Straße:</label>
+                <input
+                  type="text"
+                  id="street"
+                  name="street"
+                  value={customerData.street}
+                  onChange={handleChange}
+                  required
+                  className="small-input"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone">Telefon:</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={customerData.phone}
+                  onChange={handleChange}
+                  required
+                  className="small-input"
+                />
+              </div>
             </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="street">Straße:</label>
-              <input
-                type="text"
-                id="street"
-                name="street"
-                value={customerData.street}
-                onChange={handleChange}
-                required
-                className="small-input"
-              />
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="email">E-Mail:</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={customerData.email}
+                  onChange={handleChange}
+                  required
+                  className="small-input"
+                />
+              </div>
             </div>
-            <div className="form-group">
-              <label htmlFor="phone">Telefon:</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={customerData.phone}
-                onChange={handleChange}
-                required
-                className="small-input"
-              />
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="email">E-Mail:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={customerData.email}
-                onChange={handleChange}
-                required
-                className="small-input"
-              />
-            </div>
-          </div>
-          <button type="submit" className="submit-button">Bestellung abschicken</button>
-        </form>
+            <button type="submit" className="submit-button">Bestellung abschicken</button>
+          </form>
         </div>
         <div className="paypal-button-container">
-          <PayPalScriptProvider options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID, "currency": "EUR" }}>
+          <PayPalScriptProvider key={paypalKey} options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID, "currency": "EUR" }}>
             <PayPalButtons
               createOrder={(data, actions) => {
-                console.log("Total Cost: ", totalCost);
+                console.log("Total Cost: ", getTotalCost());
                 return actions.order.create({
                   purchase_units: [{
                     amount: {
-                      value: totalCost // Übergibt die rabattierte Summe an PayPal
+                      value: getTotalCost() // Übergibt die rabattierte Summe an PayPal
                     }
                   }]
                 });

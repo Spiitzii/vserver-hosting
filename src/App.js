@@ -11,6 +11,7 @@ import Register from './components/Register';
 import { Account } from './components/Accounts';
 import Status from './components/Status';
 import Confirm from './components/Confirm';
+import Footer from './components/footer'
 
 function App() {
   const [orders, setOrders] = useState([]);
@@ -93,6 +94,7 @@ function App() {
         <Login isOpen={showLogin} onRequestClose={closeLogin} onRegisterOpen={openRegister} />
         <Register isOpen={showRegister} onRequestClose={closeRegister} onLoginOpen={openLogin} onConfirmOpen={openConfirm} />
         <Confirm isOpen={showConfirm} onRequestClose={closeConfirm} />
+        <footer><Footer /></footer>
       </BrowserRouter>
     </Account>
   );
