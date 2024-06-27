@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import '../App.css';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import Login from '../components/Login'; 
+import { AccountContext } from '../components/Accounts';
+import Register from '../components/Register'
+import Confirm from '../components/Confirm';
 
 const instanceDetails = {
   't2.micro': { vCPUs: 1, RAM: 1, price: 20 },
@@ -28,6 +32,11 @@ function Zahlung({ orders, submitOrder }) {
   });
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountError, setDiscountError] = useState('');
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const { isLoggedIn } = useContext(AccountContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,10 +46,13 @@ function Zahlung({ orders, submitOrder }) {
     }));
   };
 
+  useEffect(() => {})
+
   const applyDiscountCode = () => {
     if (customerData.discountCode === 'ts24') {
       setDiscountApplied(true);
       setDiscountError('');
+      console.log("Discount applied. Total cost: ", totalCost);
     } else {
       setDiscountApplied(false);
       setDiscountError('Ungültiger Gutscheincode');
@@ -54,11 +66,16 @@ function Zahlung({ orders, submitOrder }) {
     }));
     setDiscountApplied(false);
     setDiscountError('');
+    console.log("Discount removed. Total cost: ", totalCost);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    submitOrder(customerData);
+    if (!isLoggedIn) {
+      setIsLoginOpen(true);
+    } else {
+      submitOrder(customerData);
+    }
   };
 
   const originalTotalCost = orders.reduce((acc, order) => {
@@ -71,7 +88,7 @@ function Zahlung({ orders, submitOrder }) {
   const discountedTotalCost = originalTotalCost - discountAmount;
   const taxRate = 0.19; // 19% MwSt
   const taxAmount = discountedTotalCost * taxRate;
-  const totalCost = (discountApplied ? 0.01 : discountedTotalCost).toFixed(2);
+  const totalCost = (discountApplied ? discountedTotalCost : originalTotalCost).toFixed(2);
 
   return (
     <div className="container payment-container">
@@ -117,16 +134,16 @@ function Zahlung({ orders, submitOrder }) {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
               <label htmlFor="discountCode" className="discount-code-label" style={{ alignSelf: 'flex-start' }}>Gutscheincode:</label>
               <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                <input
-                  type="text"
-                  id="discountCode"
-                  name="discountCode"
-                  value={customerData.discountCode}
-                  onChange={handleChange}
-                  className="discount-code-input"
+            <input
+              type="text"
+              id="discountCode"
+              name="discountCode"
+              value={customerData.discountCode}
+              onChange={handleChange}
+              className="discount-code-input"
                   style={{ flex: '1' }}
-                />
-                <button type="button" onClick={applyDiscountCode} className="apply-discount-button">Anwenden</button>
+            />
+            <button type="button" onClick={applyDiscountCode} className="apply-discount-button">Anwenden</button>
               </div>
             </div>
             {discountError && <p className="error-message">{discountError}</p>}
@@ -143,7 +160,8 @@ function Zahlung({ orders, submitOrder }) {
         </div>
         <div className="customer-data-container" style={{ backgroundColor: '#f0f0f0', padding: '10px', marginTop: '20px', transform: 'scale(0.7)', transformOrigin: 'top left' }}>
           <h4 style={{ textAlign: 'left' }}>Rechnungsinformationen:</h4>
-          <form onSubmit={handleSubmit} className="payment-form">
+        <form onSubmit={handleSubmit} className="payment-form">
+          <div className="form-row">
             <div className="form-group">
               <label htmlFor="firstName">Vorname:</label>
               <input
@@ -168,6 +186,8 @@ function Zahlung({ orders, submitOrder }) {
                 className="small-input"
               />
             </div>
+          </div>
+          <div className="form-row">
             <div className="form-group">
               <label htmlFor="street">Straße:</label>
               <input
@@ -192,6 +212,8 @@ function Zahlung({ orders, submitOrder }) {
                 className="small-input"
               />
             </div>
+          </div>
+          <div className="form-row">
             <div className="form-group">
               <label htmlFor="email">E-Mail:</label>
               <input
@@ -204,13 +226,15 @@ function Zahlung({ orders, submitOrder }) {
                 className="small-input"
               />
             </div>
-            <button type="submit" className="submit-button">Bestellung abschicken</button>
-          </form>
+          </div>
+          <button type="submit" className="submit-button">Bestellung abschicken</button>
+        </form>
         </div>
         <div className="paypal-button-container">
           <PayPalScriptProvider options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID, "currency": "EUR" }}>
             <PayPalButtons
               createOrder={(data, actions) => {
+                console.log("Total Cost: ", totalCost);
                 return actions.order.create({
                   purchase_units: [{
                     amount: {
@@ -227,6 +251,15 @@ function Zahlung({ orders, submitOrder }) {
             />
           </PayPalScriptProvider>
         </div>
+        <Login isOpen={isLoginOpen} onRequestClose={() => setIsLoginOpen(false)} onRegisterOpen={() => setIsRegisterOpen(true)} />
+        <Register isOpen={isRegisterOpen} 
+          onRequestClose={() => {setIsRegisterOpen(false); setIsLoginOpen(true);}} 
+          onConfirmOpen={() => {
+          setIsConfirmOpen(true);
+          setIsLoginOpen(false);
+          }} 
+        />
+        <Confirm isOpen={isConfirmOpen} onRequestClose={() => setIsConfirmOpen(false)} />
       </main>
     </div>
   );
