@@ -5,6 +5,7 @@ import Login from '../components/Login';
 import { AccountContext } from '../components/Accounts';
 import Register from '../components/Register';
 import Confirm from '../components/Confirm';
+import '../assets/style/Rechnung.css'
 
 const instanceDetails = {
   't2.micro': { vCPUs: 1, RAM: 1, price: 20 },
@@ -164,81 +165,101 @@ function Zahlung({ orders, submitOrder }) {
             <p><strong>Gesamtbetrag: {totalCost}€</strong></p>
           </div>
         </div>
-        <div className="customer-data-container" style={{ backgroundColor: '#f0f0f0', padding: '10px', marginTop: '20px', transform: 'scale(0.7)', transformOrigin: 'top left' }}>
-          <h4 style={{ textAlign: 'left' }}>Rechnungsinformationen:</h4>
+        <div className="customer-data-container">
+          <h4>Rechnungs- und Lieferadressen angeben</h4>
           <form onSubmit={handleSubmit} className="payment-form">
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="firstName">Vorname:</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={customerData.firstName}
-                  onChange={handleChange}
-                  required
-                  className="small-input"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="lastName">Nachname:</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={customerData.lastName}
-                  onChange={handleChange}
-                  required
-                  className="small-input"
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="street">Straße:</label>
-                <input
-                  type="text"
-                  id="street"
-                  name="street"
-                  value={customerData.street}
-                  onChange={handleChange}
-                  required
-                  className="small-input"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="phone">Telefon:</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={customerData.phone}
-                  onChange={handleChange}
-                  required
-                  className="small-input"
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="email">E-Mail:</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={customerData.email}
-                  onChange={handleChange}
-                  required
-                  className="small-input"
-                />
-              </div>
-            </div>
-            <button type="submit" className="submit-button">Bestellung abschicken</button>
-          </form>
+  <div className="form-row">
+    <div className="form-group">
+      <label htmlFor="title" className='title-label'>Anrede*</label>
+      <select id="title" name="title" value={customerData.title} onChange={handleChange} required>
+        <option value="">Bitte auswählen</option>
+        <option value="Herr">Herr</option>
+        <option value="Frau">Frau</option>
+      </select>
+    </div>
+  </div>
+  <div className="form-row">
+    <div className="form-group-firstname">
+      <label htmlFor="firstName" className='title-name'>Vorname:*</label>
+      <input
+        type="text"
+        id="firstName"
+        name="firstName"
+        value={customerData.firstName}
+        onChange={handleChange}
+        required
+      />
+    </div>
+    <div className="form-group-surname">
+      <label htmlFor="lastName">Nachname:*</label>
+      <input
+        type="text"
+        id="lastName"
+        name="lastName"
+        value={customerData.lastName}
+        onChange={handleChange}
+        required
+      />
+    </div>
+  </div>
+  <div className="form-row">
+    <div className="form-group">
+      <label htmlFor="street">Straße und Hausnummer:*</label>
+      <input
+        type="text"
+        id="street"
+        name="street"
+        value={customerData.street}
+        onChange={handleChange}
+        required
+      />
+    </div>
+    <div className="form-group">
+      <label htmlFor="postalCode">PLZ und Ort:*</label>
+      <input
+        type="text"
+        id="postalCode"
+        name="postalCode"
+        value={customerData.postalCode}
+        onChange={handleChange}
+        required
+      />
+    </div>
+  </div>
+  <div className="form-row">
+    <div className="form-group">
+      <label htmlFor="phone">Telefon:*</label>
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        value={customerData.phone}
+        onChange={handleChange}
+        required
+        className="small-input"
+      />
+    </div>
+    <div className="form-group">
+      <label htmlFor="email">E-Mail:*</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value={customerData.email}
+        onChange={handleChange}
+        required
+        className="small-input"
+      />
+    </div>
+  </div>
+  <div className="button-container"></div>
+  <button type="submit" className="submit-button">Bestellung abschicken</button>
+</form>
         </div>
         <div className="paypal-button-container">
           <PayPalScriptProvider key={paypalKey} options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID, "currency": "EUR" }}>
             <PayPalButtons
+            fundingSource='paypal'
               createOrder={(data, actions) => {
                 console.log("Total Cost: ", getTotalCost());
                 return actions.order.create({
